@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Geo Quiz</title>
+<style>
+body {
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  background:#0f1724;
+  color:#e6eef6;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+.container{
+  background:#111827;
+  padding:40px;
+  border-radius:14px;
+  text-align:center;
+  box-shadow:0 8px 26px rgba(0,0,0,0.6);
+}
+h1{margin-bottom:20px;}
+p{color:#94a3b8; margin-bottom:30px;}
+button{
+  background:#06b6d4;
+  color:#07202b;
+  border:none;
+  padding:12px 24px;
+  margin:8px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .15s;
+}
+button:hover{transform: translateY(-3px);}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Geo Quiz</h1>
+  <p>Choose dificulty :</p>
+  <button onclick="location.href='easy-test.html'">Easy</button>
+  <button onclick="location.href='medium-test.html'">Medium</button>
+  <button onclick="location.href='hard-test.html'">Hard</button>
+</div>
+</body>
+</html>
