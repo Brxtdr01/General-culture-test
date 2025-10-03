@@ -93,10 +93,17 @@ function select(idx){
 
   if(idx===q.answer){state.score+=10; state.correct++;}
   else{state.wrong++;}
+
+  // Auto-next activé ?
+  const autoNext = document.getElementById('autoNext'); // raccourci
+  if(autoNext && autoNext.checked){
+    setTimeout(nextQ,100); // délai  avant la question suivante
+  }
 }
- // Auto-next activé ?
-  if(el.autoNext.checked){
-    setTimeout(nextQ,700);
+document.getElementById('autoNext').addEventListener("change", e=>{
+  el.nextBtn.style.display = e.target.checked ? "none" : "inline-block";
+});
+
 /* ------------------------------
    QUESTION SUIVANTE OU PASSER
 -------------------------------- */
