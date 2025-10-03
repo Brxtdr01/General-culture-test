@@ -94,7 +94,9 @@ function select(idx){
   if(idx===q.answer){state.score+=10; state.correct++;}
   else{state.wrong++;}
 }
-
+ // Auto-next activé ?
+  if(el.autoNext.checked){
+    setTimeout(nextQ,700);
 /* ------------------------------
    QUESTION SUIVANTE OU PASSER
 -------------------------------- */
