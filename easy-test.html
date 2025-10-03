@@ -1,0 +1,58 @@
+
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Géographie</title>
+
+  
+  <link rel="stylesheet" href="tests.css">
+</head>
+<body>
+<div class="container">
+  <main class="quiz-area" id="quiz-area">
+    <!-- ------------------------------
+         ÉCRAN DE DÉMARRAGE
+         Visible avant le lancement
+    --------------------------------- -->
+    <div class="center" id="startScreen">
+      <h1>Geo Test</h1> 
+      <p class="sub">Click to start!</p>
+      <button class="btn" id="startBtn">Start!</button>
+    </div>
+
+    <!-- ------------------------------
+         ÉCRAN PRINCIPAL DU QUIZ
+         Contient questions + choix
+    --------------------------------- -->
+    <div id="quizScreen" style="display:none">
+      <div class="header">
+        <div class="title">Question <span id="qnum"></span></div>
+        <div class="sub" id="timerText">Temps: 0s</div>
+      </div>
+
+      <!-- Carte contenant une question -->
+      <section class="card">
+        <div class="question" id="questionText">...</div>
+        <div class="choices" id="choices"></div>
+      </section>
+
+      <!-- Boutons navigation -->
+      <button class="btn" id="nextBtn">Next →</button>
+      <button class="btn ghost" id="skipBtn">Pass</button>
+
+      <!-- Résultats finaux -->
+      <div class="results" id="results" style="display:none">
+        <div class="score" id="finalScore"></div>
+        <div id="finalSummary"></div>
+        <button class="btn" id="restartBtn">Restart</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<script src="easy-test.js"></script>
+</body>
+</html>
