@@ -1,20 +1,21 @@
-/* =========================================================
-   SCRIPT DU QUIZ GÉOGRAPHIE
-   ========================================================= */
+
 
 /* ------------------------------
-   LISTE DES QUESTIONS
-   Chaque question est un objet avec :
-   - q : texte de la question
-   - choices : tableau contenant les 4 réponses possibles
-   - answer : index de la bonne réponse
+  
+   10 q
 -------------------------------- */
 const QUESTIONS = [
-  { q:"Capitale de l'Australie ?", choices:["Sydney","Canberra","Melbourne","Perth"], answer:1 },
-  { q:"Fleuve le plus long du monde ?", choices:["Amazone","Nil","Yangtsé","Mississippi"], answer:0 },
-  { q:"Pays le plus vaste ?", choices:["Chine","USA","Russie","Canada"], answer:2 }
+  { q:"What is the capital of France?", choices:["Paris","Lyon","Marseille","Nice"], answer:0 },
+  { q:"What is the capital of Italy?", choices:["Milan","Rome","Naples","Venice"], answer:1 },
+  { q:"What is the capital of Spain?", choices:["Barcelona","Valencia","Madrid","Seville"], answer:2 },
+  { q:"What is the capital of Germany?", choices:["Berlin","Munich","Frankfurt","Hamburg"], answer:0 },
+  { q:"What is the capital of United Kingdom?", choices:["Manchester","London","Edinburgh","Belfast"], answer:1 },
+  { q:"What is the capital of USA?", choices:["New York","Washington D.C.","Los Angeles","Chicago"], answer:1 },
+  { q:"What is the capital of Canada?", choices:["Toronto","Ottawa","Montreal","Vancouver"], answer:1 },
+  { q:"What is the capital of Japan?", choices:["Osaka","Kyoto","Tokyo","Nagoya"], answer:2 },
+  { q:"What is the capital of Netherlands?", choices:["Amsterdam","Rotterdam","The Hague","Utrecht"], answer:0 },
+  { q:"What is the capital of Portugal?", choices:["Lisbon","Porto","Coimbra","Braga"], answer:0 },
 ];
-
 /* ------------------------------
    OBJET STATE
    Sert à stocker la progression du joueur
@@ -46,7 +47,7 @@ const el={
 };
 
 /* ------------------------------
-   DÉMARRER LE QUIZ
+  start LE QUIZ
    Reset des variables + affichage 1ère question
 -------------------------------- */
 function startQuiz(){
