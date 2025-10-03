@@ -77,9 +77,15 @@ function select(idx){
   
   // Auto-next activé ?
   if(el.autoNext.checked){
-    setTimeout(nextQ,700);
+    setTimeout(nextQ,700); // délai de 0,7s
   }
 }
+
+// --- Déplacer ça en dehors de select(), une seule fois ---
+el.autoNext.addEventListener("change", ()=>{
+  el.nextBtn.style.display = el.autoNext.checked ? "none" : "inline-block";
+});
+
 
 function nextQ(){state.i++; renderQ();}
 function skipQ(){state.i++; renderQ();}
