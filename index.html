@@ -9,11 +9,12 @@ body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-  /* background image */
+  /* background image locale */
   background-image: url('map.jpg');
-  background-size: cover;       /* couvre tout l'écran */
-  background-position: center;  /* centré */
-  background-repeat: no-repeat; /* ne pas répéter */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* fond fixe */
 
   color: #e6eef6;
   display: flex;
@@ -25,6 +26,7 @@ body {
 
 .container {
   background: rgba(17, 24, 39, 0.85); /* fond semi-transparent */
+  backdrop-filter: blur(5px);         /* flou léger de l'image derrière */
   padding: 40px;
   border-radius: 14px;
   text-align: center;
