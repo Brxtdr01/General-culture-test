@@ -69,7 +69,12 @@ body{
   margin-bottom:18px
 }
 .qnum{font-weight:700; margin-bottom:10px}
-.question{font-size:1.1rem; margin-bottom:14px}
+.question {
+  color: #e6eef6 !important;
+  -webkit-text-fill-color: #e6eef6 !important;
+  -webkit-appearance: none;
+}
+
 .choices{
   display:grid;
   grid-template-columns:1fr 1fr;
