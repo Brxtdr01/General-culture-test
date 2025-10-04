@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Quiz Géographie</title>
+  <link rel="stylesheet" href="tests.css">
+</head>
+<body>
+<div class="container">
+  <main class="quiz-area" id="quiz-area">
+    <!-- ------------------------------
+         ÉCRAN DE DÉMARRAGE
+    --------------------------------- -->
+    <div class="center" id="startScreen">
+      <h1>Geo Test</h1> 
+      <p class="sub">Click to start!</p>
+      <button class="btn" id="startBtn">Start!</button>
+
+      <!-- Case à cocher Auto-next -->
+      <label style="margin-top:15px; font-size:0.9rem; color:var(--muted)">
+        <input type="checkbox" id="autoNext">
+        Auto-next 
+      </label>
+    </div>
+
+    <!-- ------------------------------
+         ÉCRAN PRINCIPAL DU QUIZ
+    --------------------------------- -->
+    <div id="quizScreen" style="display:none">
+      <div class="header">
+        <div class="title">Question <span id="qnum"></span></div>
+        <div class="sub" id="timerText">Temps: 0s</div>
+      </div>
+
+      <section class="card">
+        <div class="question" id="questionText">...</div>
+        <div class="choices" id="choices"></div>
+      </section>
+
+      <button class="btn" id="nextBtn">Next →</button>
+      <button class="btn ghost" id="skipBtn">Pass</button>
+
+      <div class="results" id="results" style="display:none">
+        <div class="score" id="finalScore"></div>
+        <div id="finalSummary"></div>
+        <button class="btn" id="restartBtn">Restart</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="hard-test.js"></script>
+</body>
+</html>
