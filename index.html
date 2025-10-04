@@ -9,12 +9,12 @@ body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 
-  /* background image locale */
+  /* background image depuis le lien */
   background-image: url('map.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  background-attachment: fixed; /* fond fixe */
+  background-attachment: fixed;
 
   color: #e6eef6;
   display: flex;
@@ -25,12 +25,14 @@ body {
 }
 
 .container {
-  background: rgba(17, 24, 39, 0.85); /* fond semi-transparent */
-  backdrop-filter: blur(5px);         /* flou léger de l'image derrière */
+  background: rgba(17, 24, 39, 0.7);
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
   padding: 40px;
   border-radius: 14px;
   text-align: center;
   box-shadow: 0 8px 26px rgba(0,0,0,0.6);
+  animation: fadeIn 1s ease-out;
 }
 
 h1 {
@@ -42,20 +44,46 @@ p {
   margin-bottom: 30px;
 }
 
-button {
-  background: #06b6d4;
+/* Couleurs universelles pour les boutons */
+button.very-easy {
+  background: #22c55e; /* vert clair */
   color: #07202b;
+}
+button.easy {
+  background: #16a34a; /* vert */
+  color: #e6eef6;
+}
+button.medium {
+  background: #eab308; /* jaune */
+  color: #07202b;
+}
+button.hard {
+  background: #f97316; /* orange */
+  color: #07202b;
+}
+button.very-hard {
+  background: #dc2626; /* rouge */
+  color: #e6eef6;
+}
+
+button {
   border: none;
   padding: 12px 24px;
   margin: 8px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 button:hover {
   transform: translateY(-3px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 </style>
 </head>
@@ -63,11 +91,11 @@ button:hover {
 <div class="container">
   <h1>Geo Quiz</h1>
   <p>Choose difficulty :</p>
-  <button onclick="location.href='very-easy-test.html'">Very Easy</button>
-  <button onclick="location.href='easy-test.html'">Easy</button>
-  <button onclick="location.href='medium-test.html'">Medium</button>
-  <button onclick="location.href='hard-test.html'">Hard</button>
-  <button onclick="location.href='very-hard-test.html'">Very Hard</button>
+  <button class="very-easy" onclick="location.href='very-easy-test.html'">Very Easy</button>
+  <button class="easy" onclick="location.href='easy-test.html'">Easy</button>
+  <button class="medium" onclick="location.href='medium-test.html'">Medium</button>
+  <button class="hard" onclick="location.href='hard-test.html'">Hard</button>
+  <button class="very-hard" onclick="location.href='very-hard-test.html'">Very Hard</button>
 </div>
 </body>
 </html>
