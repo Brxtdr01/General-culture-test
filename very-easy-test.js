@@ -1,8 +1,9 @@
-
+/* =========================================================
+   QUIZ GÉOGRAPHIE - VERSION FONCTIONNELLE
+   ========================================================= */
 
 /* ------------------------------
-  
-   10 q
+   LISTE DES QUESTIONS
 -------------------------------- */
 const QUESTIONS = [
   { q:"What is the capital of France?", choices:["Paris","Lyon","Marseille","Nice"], answer:0 },
@@ -16,47 +17,45 @@ const QUESTIONS = [
   { q:"What is the capital of Netherlands?", choices:["Amsterdam","Rotterdam","The Hague","Utrecht"], answer:0 },
   { q:"What is the capital of Portugal?", choices:["Lisbon","Porto","Coimbra","Braga"], answer:0 },
 ];
+
 /* ------------------------------
    OBJET STATE
-   Sert à stocker la progression du joueur
-   - i : numéro de la question actuelle
-   - score : total des points
-   - correct : nb de bonnes réponses
-   - wrong : nb de mauvaises réponses
-   - start : timestamp au lancement
 -------------------------------- */
-const state={i:0,score:0,correct:0,wrong:0,start:null};
+const state = { i:0, score:0, correct:0, wrong:0, start:null };
 
 /* ------------------------------
    Raccourcis vers les éléments HTML
 -------------------------------- */
-const el={
-  startScreen:document.getElementById('startScreen'),
-  startBtn:document.getElementById('startBtn'),
-  quizScreen:document.getElementById('quizScreen'),
-  qnum:document.getElementById('qnum'),
-  questionText:document.getElementById('questionText'),
-  choices:document.getElementById('choices'),
-  nextBtn:document.getElementById('nextBtn'),
-  skipBtn:document.getElementById('skipBtn'),
-  timerText:document.getElementById('timerText'),
-  results:document.getElementById('results'),
-  finalScore:document.getElementById('finalScore'),
-  finalSummary:document.getElementById('finalSummary'),
-  restartBtn:document.getElementById('restartBtn')
+const el = {
+  startScreen: document.getElementById('startScreen'),
+  startBtn: document.getElementById('startBtn'),
+  quizScreen: document.getElementById('quizScreen'),
+  qnum: document.getElementById('qnum'),
+  questionText: document.getElementById('questionText'),
+  choices: document.getElementById('choices'),
+  nextBtn: document.getElementById('nextBtn'),
+  skipBtn: document.getElementById('skipBtn'),
+  timerText: document.getElementById('timerText'),
+  results: document.getElementById('results'),
+  finalScore: document.getElementById('finalScore'),
+  finalSummary: document.getElementById('finalSummary'),
+  restartBtn: document.getElementById('restartBtn'),
+  autoNext: document.getElementById('autoNext') // <- ajouté proprement ici
 };
 
 /* ------------------------------
-  start LE QUIZ
-   Reset des variables + affichage 1ère question
+   LANCER LE QUIZ
 -------------------------------- */
-function startQuiz(){
-  state.i=0; state.score=0; state.correct=0; state.wrong=0;
-  state.start=Date.now();
+function startQuiz() {
+  state.i = 0;
+  state.score = 0;
+  state.correct = 0;
+  state.wrong = 0;
+  state.start = Date.now();
 
-  el.startScreen.style.display="none";
-  el.quizScreen.style.display="block";
-  el.results.style.display="none";
+  el.startScreen.style.display = "none";
+  el.quizScreen.style.display = "block";
+  el.results.style.display = "none";
 
   renderQ();
 }
@@ -64,21 +63,19 @@ function startQuiz(){
 /* ------------------------------
    AFFICHER UNE QUESTION
 -------------------------------- */
-function renderQ(){
-  // Fin du quiz si on dépasse la longueur
-  if(state.i>=QUESTIONS.length){finish();return;}
+function renderQ() {
+  if (state.i >= QUESTIONS.length) { finish(); return; }
 
-  const q=QUESTIONS[state.i];
-  el.qnum.textContent=`${state.i+1}/${QUESTIONS.length}`;
-  el.questionText.textContent=q.q;
-  el.choices.innerHTML="";
+  const q = QUESTIONS[state.i];
+  el.qnum.textContent = `${state.i + 1}/${QUESTIONS.length}`;
+  el.questionText.textContent = q.q;
+  el.choices.innerHTML = "";
 
-  // Création dynamique des boutons réponses
-  q.choices.forEach((c,idx)=>{
-    const b=document.createElement('button');
-    b.className="choice";
-    b.textContent=c;
-    b.onclick=()=>select(idx);
+  q.choices.forEach((c, idx) => {
+    const b = document.createElement('button');
+    b.className = "choice";
+    b.textContent = c;
+    b.onclick = () => select(idx);
     el.choices.appendChild(b);
   });
 }
@@ -86,64 +83,75 @@ function renderQ(){
 /* ------------------------------
    GESTION D’UNE RÉPONSE
 -------------------------------- */
-function select(idx){
-  const q=QUESTIONS[state.i];
+function select(idx) {
+  const q = QUESTIONS[state.i];
 
-  // Vérifie chaque bouton pour afficher vert/rouge
-  Array.from(el.choices.children).forEach((b,i)=>{
-    b.disabled=true; // empêche de recliquer
-    if(i===q.answer){b.classList.add("correct");}
-    else if(i===idx){b.classList.add("wrong");}
+  Array.from(el.choices.children).forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.answer) b.classList.add("correct");
+    else if (i === idx) b.classList.add("wrong");
   });
 
-  // Mise à jour des stats
-  if(idx===q.answer){state.score+=10; state.correct++;}
-  else{state.wrong++;}
-    // Auto-next activé ?
-  if(el.autoNext.checked){
-    setTimeout(nextQ,100); // délai de 0,7s
+  if (idx === q.answer) {
+    state.score += 10;
+    state.correct++;
+  } else {
+    state.wrong++;
+  }
+
+  if (el.autoNext && el.autoNext.checked) {
+    setTimeout(nextQ, 700); // petit délai pour voir la couleur
   }
 }
-// --- Déplacer ça en dehors de select(), une seule fois ---
-el.autoNext.addEventListener("change", ()=>{
-  el.nextBtn.style.display = el.autoNext.checked ? "none" : "inline-block";
-});
-
 
 /* ------------------------------
-   QUESTION SUIVANTE OU PASSER
+   PASSER OU SUIVRE
 -------------------------------- */
-function nextQ(){state.i++;renderQ();}
-function skipQ(){state.i++;renderQ();}
+function nextQ() {
+  state.i++;
+  renderQ();
+}
+
+function skipQ() {
+  state.i++;
+  renderQ();
+}
 
 /* ------------------------------
    FIN DU QUIZ
 -------------------------------- */
-function finish(){
-  el.questionText.textContent="Quiz terminé";
-  el.choices.innerHTML="";
-  el.results.style.display="block";
+function finish() {
+  el.questionText.textContent = "Quiz terminé";
+  el.choices.innerHTML = "";
+  el.results.style.display = "block";
 
-  el.finalScore.textContent=`${state.score} points`;
-  el.finalSummary.textContent=`${state.correct} bonnes / ${QUESTIONS.length} questions en ${Math.round((Date.now()-state.start)/1000)}s`;
+  const elapsed = Math.round((Date.now() - state.start) / 1000);
+  el.finalScore.textContent = `${state.score} points`;
+  el.finalSummary.textContent = `${state.correct} bonnes / ${QUESTIONS.length} questions en ${elapsed}s`;
 }
 
 /* ------------------------------
-   TIMER EN DIRECT
+   TIMER
 -------------------------------- */
-setInterval(()=>{
-  if(state.start){
-    el.timerText.textContent="Temps: "+Math.round((Date.now()-state.start)/1000)+"s";
+setInterval(() => {
+  if (state.start) {
+    el.timerText.textContent = "Temps: " + Math.round((Date.now() - state.start) / 1000) + "s";
   }
-},1000);
+}, 1000);
 
 /* ------------------------------
-   LISTENERS DES BOUTONS
+   LISTENERS
 -------------------------------- */
-el.startBtn.onclick=startQuiz;
-el.nextBtn.onclick=nextQ;
-el.skipBtn.onclick=skipQ;
-el.restartBtn.onclick=()=>{
-  el.quizScreen.style.display="none";
-  el.startScreen.style.display="flex";
+if (el.autoNext) {
+  el.autoNext.addEventListener("change", () => {
+    el.nextBtn.style.display = el.autoNext.checked ? "none" : "inline-block";
+  });
+}
+
+el.startBtn.onclick = startQuiz;
+el.nextBtn.onclick = nextQ;
+el.skipBtn.onclick = skipQ;
+el.restartBtn.onclick = () => {
+  el.quizScreen.style.display = "none";
+  el.startScreen.style.display = "flex";
 };
