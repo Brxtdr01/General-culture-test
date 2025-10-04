@@ -99,7 +99,16 @@ function select(idx){
   // Mise à jour des stats
   if(idx===q.answer){state.score+=10; state.correct++;}
   else{state.wrong++;}
+    // Auto-next activé ?
+  if(el.autoNext.checked){
+    setTimeout(nextQ,100); // délai de 0,7s
+  }
 }
+// --- Déplacer ça en dehors de select(), une seule fois ---
+el.autoNext.addEventListener("change", ()=>{
+  el.nextBtn.style.display = el.autoNext.checked ? "none" : "inline-block";
+});
+
 
 /* ------------------------------
    QUESTION SUIVANTE OU PASSER
