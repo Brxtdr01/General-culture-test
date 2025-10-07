@@ -3,99 +3,204 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Geo Quiz</title>
+<title>Geo Quiz Hub</title>
 <style>
-body {
+:root {
+  --bg-overlay: rgba(17, 24, 39, 0.78);
+  --text-light: #e6eef6;
+  --text-muted: #94a3b8;
+}
+* {
+  box-sizing: border-box;
   margin: 0;
+  padding: 0;
+}
+body {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-
-  /* background image depuis le lien */
-  background-image: url('map.jpg');
+  background-image: url('https://img.freepik.com/vecteurs-premium/carte-du-monde-detaillee-frontieres-pays-isoles-blanc_119523-10121.jpg?semt=ais_hybrid&w=1200&q=90');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-
-  color: #e6eef6;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: 20px;
+  animation: fadeIn 1.2s ease-in;
 }
 
-.container {
-  background: rgba(17, 24, 39, 0.7);
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
-  padding: 40px;
-  border-radius: 14px;
+/* Fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.container {   
+  background: var(--bg-overlay);
+  backdrop-filter: blur(6px);
+  padding: 45px 35px;
+  border-radius: 16px;
   text-align: center;
   box-shadow: 0 8px 26px rgba(0,0,0,0.6);
-  animation: fadeIn 1s ease-out;
+  max-width: 900px;
+  width: 100%;
 }
 
 h1 {
-  margin-bottom: 20px;
+  font-size: 2.4rem;
+  margin-bottom: 18px;
+  color: var(--text-light);
+  letter-spacing: 1px;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 8px rgba(59,130,246,0.4); }
+  to { text-shadow: 0 0 20px rgba(59,130,246,0.9); }
 }
 
 p {
-  color: #94a3b8;
-  margin-bottom: 30px;
-}
-
-/* Couleurs universelles pour les boutons */
-button.very-easy {
-  background: #22c55e; /* vert clair */
-  color: #07202b;
-}
-button.easy {
-  background: #16a34a; /* vert */
-  color: #e6eef6;
-}
-button.medium {
-  background: #eab308; /* jaune */
-  color: #07202b;
-}
-button.hard {
-  background: #f97316; /* orange */
-  color: #07202b;
-}
-button.very-hard {
-  background: #dc2626; /* rouge */
-  color: #e6eef6;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  font-size: 1rem;
 }
 
 button {
-  border: none;
   padding: 12px 24px;
   margin: 8px;
   border-radius: 10px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  transition: transform .2s, box-shadow .2s, opacity .2s;
 }
-
 button:hover {
   transform: translateY(-3px);
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  opacity: 0.95;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Couleurs des niveaux */
+button.very-easy { background:#22c55e; color:#07202b; }
+button.easy { background:#16a34a; color:#e6eef6; }
+button.medium { background:#eab308; color:#07202b; }
+button.hard { background:#f97316; color:#07202b; }
+button.very-hard { background:#dc2626; color:#e6eef6; }
+
+/* Continent section */
+h2 {
+  margin-top: 40px;
+  color: var(--text-light);
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+.continents {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.continent-card {
+  width: 120px;
+  height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+  position: relative;
+}
+.continent-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.continent-card span {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.9rem;
+  letter-spacing: 0.3px;
+}
+.continent-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* Footer */
+footer {
+  margin-top: 45px;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+footer a {
+  color: #60a5fa;
+  text-decoration: none;
+}
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .container { padding: 30px 20px; }
+  h1 { font-size: 1.9rem; }
+  .continent-card { width: 100px; height: 70px; }
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>Geo Quiz</h1>
-  <p>Choose difficulty :</p>
+  <h1>🌍 Geo Quiz Hub</h1>
+  <p>Choose your difficulty level:</p>
   <button class="very-easy" onclick="location.href='very-easy-test.html'">Very Easy</button>
   <button class="easy" onclick="location.href='easy-test.html'">Easy</button>
   <button class="medium" onclick="location.href='medium-test.html'">Medium</button>
   <button class="hard" onclick="location.href='hard-test.html'">Hard</button>
   <button class="very-hard" onclick="location.href='very-hard-test.html'">Very Hard</button>
+
+  <h2>Or choose by continent :</h2>
+  <div class="continents">
+    <div class="continent-card" onclick="location.href='africa.html'">
+      <img src="/imgs/africa.webp" alt="Africa">
+      <span>Africa</span>
+    </div>
+    <div class="continent-card" onclick="location.href='asia.html'">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/65/Asia_continent_map.jpg" alt="Asia">
+      <span>Asia</span>
+    </div>
+    <div class="continent-card" onclick="location.href='europe.html'">
+      <img src="/imgs/europe.webp" alt="Europe">
+      <span>Europe</span>
+    </div>
+    <div class="continent-card" onclick="location.href='north-america.html'">
+      <img src="/imgs/north_america.webp" alt="North America">
+      <span>North America</span>
+    </div>
+    <div class="continent-card" onclick="location.href='south-america.html'">
+      <img src="/imgs/south_america.webp" alt="South America">
+      <span>South America</span>
+    </div>
+    <div class="continent-card" onclick="location.href='oceania.html'">
+      <img src="/imgs/oceania.webp" alt="Oceania">
+      <span>Oceania</span>
+    </div>
+    
+   
+  </div>
+
+  <footer>
+    © 2025 Geo Test — Made by BrXtDR01 | <a href="https://github.com/">GitHub</a>
+  </footer>
 </div>
 </body>
 </html>
