@@ -1,46 +1,32 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quiz Géographie</title>
-
-  
   <link rel="stylesheet" href="tests.css">
 </head>
 <body>
 <div class="container">
   <main class="quiz-area" id="quiz-area">
-    <!-- ------------------------------
-         ÉCRAN DE DÉMARRAGE
-         Visible avant le lancement
-    --------------------------------- -->
+    <!-- ÉCRAN DE DÉMARRAGE -->
     <div class="center" id="startScreen">
       <h1>Geo Test</h1> 
       <p class="sub">Click to start!</p>
       <button class="btn" id="startBtn">Start!</button>
-
-
-
-            <!-- Case à cocher Auto-next -->
       <label style="margin-top:15px; font-size:0.9rem; color:var(--muted)">
         <input type="checkbox" id="autoNext">
         Auto-next 
       </label>
     </div>
 
-    <!-- ------------------------------
-         ÉCRAN PRINCIPAL DU QUIZ
-         Contient questions + choix
-    --------------------------------- -->
+    <!-- ÉCRAN PRINCIPAL DU QUIZ -->
     <div id="quizScreen" style="display:none">
       <div class="header">
         <div class="title">Question <span id="qnum"></span></div>
         <div class="sub" id="timerText">Temps: 0s</div>
       </div>
 
-      <!-- Carte contenant une question -->
       <section class="card">
         <div class="question" id="questionText">...</div>
         <div class="choices" id="choices"></div>
@@ -49,8 +35,10 @@
       <!-- Boutons navigation -->
       <button class="btn" id="nextBtn">Next →</button>
       <button class="btn ghost" id="skipBtn">Pass</button>
+      <!-- Bouton Back -->
+      <button class="btn ghost" id="backBtn" style="position:absolute; top:10px; left:10px; display:none;">Back</button>
 
-      <!-- Résultats finaux -->
+      <!-- Résultats -->
       <div class="results" id="results" style="display:none">
         <div class="score" id="finalScore"></div>
         <div id="finalSummary"></div>
@@ -60,7 +48,49 @@
   </main>
 </div>
 
+<!-- JS du quiz -->
+<script src="levels-JSs/very-easy-test.js"></script>
 
-<script src="very-easy-test.js"></script>
+<!-- Logique Back -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const backBtn = document.getElementById("backBtn");
+  const results = document.getElementById("results");
+
+  let quizStarted = false;
+  let quizFinished = false;
+
+  const startBtn = document.getElementById("startBtn");
+  startBtn.addEventListener("click", () => {
+    quizStarted = true;
+    backBtn.style.display = "block";
+  });
+
+  backBtn.addEventListener("click", () => {
+    if (quizFinished) {
+      location.href = "../index.html";
+      return;
+    }
+    if (quizStarted) {
+      const confirmLeave = confirm(
+        "Are you sure you want to go back? Your progress will be lost!"
+      );
+      if (confirmLeave) location.href = "../index.html";
+    } else {
+      location.href = "../index.html";
+    }
+  });
+
+  // Observer pour déplacer le bouton une fois le quiz terminé
+  const observer = new MutationObserver(() => {
+    if (results.style.display !== "none") {
+      quizFinished = true;
+      backBtn.style.position = "static";
+      backBtn.style.display = "inline-block";
+    }
+  });
+  observer.observe(results, { attributes: true, attributeFilter: ["style"] });
+});
+</script>
 </body>
 </html>
