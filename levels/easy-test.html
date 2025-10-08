@@ -1,60 +1,64 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quiz Géographie</title>
-
-  
-  <link rel="stylesheet" href="tests.css">
+  <link rel="stylesheet" href="../tests.css">
+  <style>
+    #backBtn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: none;
+      background: #dc2626;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s, opacity 0.2s;
+      z-index: 999;
+    }
+    #backBtn:hover {
+      transform: translateY(-2px);
+      opacity: 0.9;
+    }
+  </style>
 </head>
 <body>
 <div class="container">
   <main class="quiz-area" id="quiz-area">
-    <!-- ------------------------------
-         ÉCRAN DE DÉMARRAGE
-         Visible avant le lancement
-    --------------------------------- -->
+
+    <!-- START SCREEN -->
     <div class="center" id="startScreen">
       <h1>Geo Test</h1> 
       <p class="sub">Click to start!</p>
       <button class="btn" id="startBtn">Start!</button>
-
-
-
-
-
-
-            <!-- Case à cocher Auto-next -->
       <label style="margin-top:15px; font-size:0.9rem; color:var(--muted)">
         <input type="checkbox" id="autoNext">
         Auto-next 
       </label>
     </div>
-  
 
-    <!-- ------------------------------
-         ÉCRAN PRINCIPAL DU QUIZ
-         Contient questions + choix
-    --------------------------------- -->
+    <!-- QUIZ SCREEN -->
     <div id="quizScreen" style="display:none">
       <div class="header">
         <div class="title">Question <span id="qnum"></span></div>
         <div class="sub" id="timerText">Temps: 0s</div>
       </div>
 
-      <!-- Carte contenant une question -->
       <section class="card">
         <div class="question" id="questionText">...</div>
         <div class="choices" id="choices"></div>
       </section>
 
-      <!-- Boutons navigation -->
       <button class="btn" id="nextBtn">Next →</button>
       <button class="btn ghost" id="skipBtn">Pass</button>
+      <button class="btn" id="backBtn">Back</button>
 
-      <!-- Résultats finaux -->
       <div class="results" id="results" style="display:none">
         <div class="score" id="finalScore"></div>
         <div id="finalSummary"></div>
@@ -64,7 +68,46 @@
   </main>
 </div>
 
+<script src="../levels-JSs/easy-test.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const backBtn = document.getElementById("backBtn");
+  const results = document.getElementById("results");
+  const startBtn = document.getElementById("startBtn");
 
-<script src="easy-test.js"></script>
+  let quizStarted = false;
+  let quizFinished = false;
+
+  // Show back button when quiz starts
+  startBtn.addEventListener("click", () => {
+    quizStarted = true;
+    backBtn.style.display = "block";
+  });
+
+  // Back button behavior
+  backBtn.addEventListener("click", () => {
+    if (quizFinished) {
+      location.href = "index.html";
+      return;
+    }
+    if (quizStarted) {
+      const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost!");
+      if (confirmLeave) location.href = "index.html";
+    } else {
+      location.href = "index.html";
+    }
+  });
+
+  // Move back button next to other buttons when quiz finishes
+  const observer = new MutationObserver(() => {
+    if (results.style.display !== "none") {
+      quizFinished = true;
+      backBtn.style.position = "static";
+      backBtn.style.display = "inline-block";
+    }
+  });
+  observer.observe(results, { attributes: true, attributeFilter: ["style"] });
+});
+</script>
 </body>
 </html>
