@@ -4,7 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Quiz Géographie</title>
-  <link rel="stylesheet" href="tests.css">
+  <!-- Chemin CSS corrigé si tests.css est à la racine -->
+  <link rel="stylesheet" href="../tests.css">
 </head>
 <body>
 <div class="container">
@@ -35,7 +36,7 @@
       <button class="btn" id="nextBtn">Next →</button>
       <button class="btn ghost" id="skipBtn">Pass</button>
 
-      <!-- Le bouton Back sera géré ici -->
+      <!-- Back button -->
       <button class="btn ghost" id="backBtn" style="
         position: absolute;
         top: 10px;
@@ -52,20 +53,19 @@
   </main>
 </div>
 
-<script src="hard-test.js"></script>
+<!-- Chemin JS corrigé si les fichiers sont dans levels-JSs -->
+<script src="../levels-JSs/hard-test.js"></script>
 
 <script>
 // ---------- BACK BUTTON LOGIC ----------
 document.addEventListener("DOMContentLoaded", () => {
   const backBtn = document.getElementById("backBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const skipBtn = document.getElementById("skipBtn");
   const results = document.getElementById("results");
 
   let quizStarted = false;
   let quizFinished = false;
 
-  // quand le test démarre (géré par ton JS principal)
+  // quand le test démarre
   const startBtn = document.getElementById("startBtn");
   startBtn.addEventListener("click", () => {
     quizStarted = true;
@@ -75,16 +75,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // comportement du bouton
   backBtn.addEventListener("click", () => {
     if (quizFinished) {
-      location.href = "index.html";
+      location.href = "../index.html";
       return;
     }
     if (quizStarted) {
       const confirmLeave = confirm(
         "Are you sure you want to go back? Your progress will be lost!"
       );
-      if (confirmLeave) location.href = "index.html";
+      if (confirmLeave) location.href = "../index.html";
     } else {
-      location.href = "index.html";
+      location.href = "../index.html";
     }
   });
 
