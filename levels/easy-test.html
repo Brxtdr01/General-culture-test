@@ -87,14 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Back button behavior
   backBtn.addEventListener("click", () => {
     if (quizFinished) {
-      location.href = "index.html";
+      location.href = "../index.html";
       return;
     }
     if (quizStarted) {
       const confirmLeave = confirm("Are you sure you want to go back? Your progress will be lost!");
-      if (confirmLeave) location.href = "index.html";
+      if (confirmLeave) location.href = "../index.html";
     } else {
-      location.href = "index.html";
+      location.href = "../index.html";
     }
   });
 
