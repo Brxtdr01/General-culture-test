@@ -1,1 +1,249 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Africa Capitals Quiz 🌍</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; overflow: hidden;
+    font-family: 'Poppins', sans-serif; color: #fff;
+    display: flex; justify-content: center; align-items: center;
+    padding: 2rem; position: relative; background: #000;
+  }
+  .bg { position: fixed; top:0; left:0; width:100%; height:100%;
+    background-size: cover; background-position: center;
+    transition: opacity 2s ease-in-out; z-index: -2;
+  }
+  .bg.fade-out { opacity:0; }
+  .container {
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    border-radius: 1.2rem; box-shadow:0 0 30px rgba(0,0,0,0.5);
+    max-width: 800px; width:100%; padding:2rem 2.5rem; text-align:center;
+    position: relative; z-index:2; animation: fadeIn 1.5s ease-in-out;
+  }
+  @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+  h1 { font-size:2rem; font-weight:600; margin-bottom:1.5rem; color:#ffcc33; text-shadow:0 0 10px rgba(255,204,51,0.6);}
+  .question { font-size:1.2rem; margin-bottom:1rem; }
+  .choices button {
+    display:block; width:100%; background: rgba(255,255,255,0.1);
+    border:2px solid rgba(255,255,255,0.3); color:#fff;
+    font-size:1rem; padding:0.8rem; border-radius:0.8rem;
+    cursor:pointer; transition: all 0.3s ease; margin:0.5rem 0;
+  }
+  .choices button.correct { background: rgba(46,204,113,0.8); }
+  .choices button.wrong { background: rgba(231,76,60,0.8); }
+  .choices button:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
+  .footer { margin-top:1.5rem; font-size:0.9rem; opacity:0.8; }
+  #quizScreen, #results { display:none; }
+  @media(max-width:600px){ .container{ padding:1.5rem; } h1{ font-size:1.6rem; } }
+  .controls { margin-top:1rem; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<div id="bg1" class="bg"></div>
+<div id="bg2" class="bg fade-out"></div>
+
+<div class="container">
+
+  <div id="startScreen">
+    <h1>Africa Capitals Quiz 🌍</h1>
+    <button id="startBtn">Start Quiz</button>
+  </div>
+
+  <div id="quizScreen">
+    <div id="qnum"></div>
+    <div class="question" id="questionText"></div>
+    <div class="choices" id="choices"></div>
+    <div class="controls">
+      <button id="nextBtn">Next</button>
+      <button id="skipBtn">Skip</button>
+      <label><input type="checkbox" id="autoNext"> Auto Next</label>
+    </div>
+    <div id="timerText">Time: 0s</div>
+  </div>
+
+  <div id="results">
+    <h1>Quiz Finished!</h1>
+    <p id="finalScore"></p>
+    <p id="finalSummary"></p>
+    <button id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <div class="footer">Africa | Geography Quiz</div>
+</div>
+
+<script>
+/* BACKGROUND ANIMATION */
+const images = [
+  "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&q=80&w=871",
+  "https://images.unsplash.com/photo-1484318571209-661cf29a69c3?auto=format&fit=crop&q=80&w=870",
+  "https://images.unsplash.com/photo-1614531341773-3bff8b7cb3fc?auto=format&fit=crop&q=80&w=1032",
+  "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?auto=format&fit=crop&q=80&w=726",
+  "https://images.unsplash.com/photo-1481464904474-a575a33b44a0?auto=format&fit=crop&q=80&w=871",
+  "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?auto=format&fit=crop&q=80&w=725"
+];
+const bg1 = document.getElementById('bg1'), bg2 = document.getElementById('bg2');
+let current = 0;
+bg1.style.backgroundImage = `url("${images[current]}")`;
+bg2.style.backgroundImage = `url("${images[(current+1)%images.length]}")`;
+setInterval(()=>{
+  bg1.classList.toggle('fade-out');
+  bg2.classList.toggle('fade-out');
+  current = (current+1)%images.length;
+  const next = (current+1)%images.length;
+  setTimeout(()=>{
+    if(bg1.classList.contains('fade-out')) bg1.style.backgroundImage = `url("${images[next]}")`;
+    else bg2.style.backgroundImage = `url("${images[next]}")`;
+  },2000);
+},8000);
+
+/* QUIZ DATA */
+const QUESTIONS = [
+{q:"What is the capital of Algeria?", choices:["Algiers","Luanda","Porto-Novo","Gaborone"], answer:0},
+{q:"What is the capital of Angola?", choices:["Luanda","Algiers","Ouagadougou","Gitega"], answer:0},
+{q:"What is the capital of Benin?", choices:["Porto-Novo","Praia","Kinshasa","Brazzaville"], answer:0},
+{q:"What is the capital of Botswana?", choices:["Gaborone","Ouagadougou","Yaoundé","Libreville"], answer:0},
+{q:"What is the capital of Burkina Faso?", choices:["Ouagadougou","Algiers","Kampala","Accra"], answer:0},
+{q:"What is the capital of Burundi?", choices:["Gitega","Kigali","Banjul","Monrovia"], answer:0},
+{q:"What is the capital of Cameroon?", choices:["Yaoundé","Libreville","Victoria","Freetown"], answer:0},
+{q:"What is the capital of Cape Verde?", choices:["Praia","Malabo","Dakar","Tripoli"], answer:0},
+{q:"What is the capital of Comoros?", choices:["Moroni","Port-Louis","Maputo","Harare"], answer:0},
+{q:"What is the capital of Democratic Republic of the Congo?", choices:["Kinshasa","Brazzaville","Niamey","Bamako"], answer:0},
+{q:"What is the capital of Republic of the Congo?", choices:["Brazzaville","Kinshasa","Lusaka","Dodoma"], answer:0},
+{q:"What is the capital of Ivory Coast?", choices:["Yamoussoukro","Abuja","Accra","Dakar"], answer:0},
+{q:"What is the capital of Djibouti?", choices:["Djibouti","Asmara","Maseru","Tripoli"], answer:0},
+{q:"What is the capital of Egypt?", choices:["Cairo","Khartoum","Tunis","Windhoek"], answer:0},
+{q:"What is the capital of Eritrea?", choices:["Asmara","Addis Ababa","Lilongwe","Niamey"], answer:0},
+{q:"What is the capital of Eswatini?", choices:["Mbabane","Maseru","Gaborone","Libreville"], answer:0},
+{q:"What is the capital of Ethiopia?", choices:["Addis Ababa","Asmara","Kampala","Maputo"], answer:0},
+{q:"What is the capital of Gabon?", choices:["Libreville","Yaoundé","Brazzaville","Victoria"], answer:0},
+{q:"What is the capital of Gambia?", choices:["Banjul","Dakar","Accra","Abuja"], answer:0},
+{q:"What is the capital of Ghana?", choices:["Accra","Kampala","Lusaka","Harare"], answer:0},
+{q:"What is the capital of Guinea?", choices:["Conakry","Bissau","Dakar","Praia"], answer:0},
+{q:"What is the capital of Guinea-Bissau?", choices:["Bissau","Conakry","Kinshasa","Libreville"], answer:0},
+{q:"What is the capital of Equatorial Guinea?", choices:["Malabo","Libreville","Victoria","Brazzaville"], answer:0},
+{q:"What is the capital of Kenya?", choices:["Nairobi","Kampala","Dodoma","Lusaka"], answer:0},
+{q:"What is the capital of Lesotho?", choices:["Maseru","Mbabane","Gaborone","Victoria"], answer:0},
+{q:"What is the capital of Liberia?", choices:["Monrovia","Accra","Freetown","Dakar"], answer:0},
+{q:"What is the capital of Libya?", choices:["Tripoli","Khartoum","Cairo","Rabat"], answer:0},
+{q:"What is the capital of Madagascar?", choices:["Antananarivo","Maputo","Lusaka","Harare"], answer:0},
+{q:"What is the capital of Malawi?", choices:["Lilongwe","Kampala","Addis Ababa","Windhoek"], answer:0},
+{q:"What is the capital of Mali?", choices:["Bamako","Niamey","Dakar","Praia"], answer:0},
+{q:"What is the capital of Morocco?", choices:["Rabat","Cairo","Tunis","Tripoli"], answer:0},
+{q:"What is the capital of Mauritius?", choices:["Port Louis","Victoria","Maputo","Lusaka"], answer:0},
+{q:"What is the capital of Mauritania?", choices:["Nouakchott","Dakar","Algiers","Bamako"], answer:0},
+{q:"What is the capital of Mozambique?", choices:["Maputo","Lilongwe","Harare","Kigali"], answer:0},
+{q:"What is the capital of Namibia?", choices:["Windhoek","Lusaka","Gaborone","Harare"], answer:0},
+{q:"What is the capital of Niger?", choices:["Niamey","Bamako","Accra","Lusaka"], answer:0},
+{q:"What is the capital of Nigeria?", choices:["Abuja","Lagos","Kano","Ibadan"], answer:0},
+{q:"What is the capital of Uganda?", choices:["Kampala","Nairobi","Dodoma","Lusaka"], answer:0},
+{q:"What is the capital of Rwanda?", choices:["Kigali","Bujumbura","Kinshasa","Brazzaville"], answer:0},
+{q:"What is the capital of Sao Tome and Principe?", choices:["São Tomé","Praia","Victoria","Malabo"], answer:0},
+{q:"What is the capital of Senegal?", choices:["Dakar","Banjul","Conakry","Freetown"], answer:0},
+{q:"What is the capital of Seychelles?", choices:["Victoria","Port Louis","Maputo","Libreville"], answer:0},
+{q:"What is the capital of Sierra Leone?", choices:["Freetown","Monrovia","Accra","Dakar"], answer:0},
+{q:"What is the capital of Somalia?", choices:["Mogadishu","Nairobi","Kampala","Dodoma"], answer:0},
+{q:"What is the capital of Sudan?", choices:["Khartoum","Cairo","Tripoli","Tunis"], answer:0},
+{q:"What is the capital of South Sudan?", choices:["Juba","Khartoum","Cairo","Tripoli"], answer:0},
+{q:"What is the capital of Tanzania?", choices:["Dodoma","Dar es Salaam","Nairobi","Kampala"], answer:0},
+{q:"What is the capital of Chad?", choices:["N'Djamena","Bamako","Niamey","Khartoum"], answer:0},
+{q:"What is the capital of Togo?", choices:["Lomé","Accra","Cotonou","Praia"], answer:0},
+{q:"What is the capital of Tunisia?", choices:["Tunis","Algiers","Tripoli","Rabat"], answer:0},
+{q:"What is the capital of Zambia?", choices:["Lusaka","Harare","Lilongwe","Windhoek"], answer:0},
+{q:"What is the capital of Zimbabwe?", choices:["Harare","Lusaka","Maputo","Kigali"], answer:0}
+];
+
+/* STATE & ELEMENTS */
+const state={i:0,score:0,correct:0,wrong:0,start:null};
+const el={
+  startScreen:document.getElementById('startScreen'),
+  startBtn:document.getElementById('startBtn'),
+  quizScreen:document.getElementById('quizScreen'),
+  qnum:document.getElementById('qnum'),
+  questionText:document.getElementById('questionText'),
+  choices:document.getElementById('choices'),
+  nextBtn:document.getElementById('nextBtn'),
+  skipBtn:document.getElementById('skipBtn'),
+  timerText:document.getElementById('timerText'),
+  results:document.getElementById('results'),
+  finalScore:document.getElementById('finalScore'),
+  finalSummary:document.getElementById('finalSummary'),
+  restartBtn:document.getElementById('restartBtn'),
+  autoNext:document.getElementById('autoNext')
+};
+
+/* QUIZ FUNCTIONS */
+function startQuiz(){
+  state.i=0; state.score=0; state.correct=0; state.wrong=0;
+  state.start=Date.now();
+  el.startScreen.style.display="none";
+  el.quizScreen.style.display="block";
+  el.results.style.display="none";
+  renderQ();
+}
+
+function renderQ(){
+  if(state.i>=QUESTIONS.length){finish(); return;}
+  const q=QUESTIONS[state.i];
+  el.qnum.textContent=`${state.i+1}/${QUESTIONS.length}`;
+  el.questionText.textContent=q.q;
+  el.choices.innerHTML="";
+  q.choices.forEach((c,idx)=>{
+    const b=document.createElement('button');
+    b.className="choice";
+    b.textContent=c;
+    b.onclick=()=>select(idx);
+    el.choices.appendChild(b);
+  });
+}
+
+function select(idx){
+  const q=QUESTIONS[state.i];
+  Array.from(el.choices.children).forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.answer){b.classList.add("correct");}
+    else if(i===idx){b.classList.add("wrong");}
+  });
+  if(idx===q.answer){state.score+=10; state.correct++;}
+  else{state.wrong++;}
+  if(el.autoNext.checked){ setTimeout(nextQ,100);}
+}
+
+el.autoNext.addEventListener("change", ()=>{
+  el.nextBtn.style.display = el.autoNext.checked ? "none" : "inline-block";
+});
+
+function nextQ(){state.i++; renderQ();}
+function skipQ(){state.i++; renderQ();}
+function finish(){
+  el.questionText.textContent="Quiz Finished!";
+  el.choices.innerHTML="";
+  el.results.style.display="block";
+  el.finalScore.textContent=`${state.score} points`;
+  el.finalSummary.textContent=`${state.correct} correct / ${QUESTIONS.length} questions in ${Math.round((Date.now()-state.start)/1000)}s`;
+}
+
+/* TIMER */
+setInterval(()=>{
+  if(state.start){
+    el.timerText.textContent="Time: "+Math.round((Date.now()-state.start)/1000)+"s";
+  }
+},1000);
+
+/* BUTTONS */
+el.startBtn.onclick=startQuiz;
+el.nextBtn.onclick=nextQ;
+el.skipBtn.onclick=skipQ;
+el.restartBtn.onclick=()=>{
+  el.quizScreen.style.display="none";
+  el.startScreen.style.display="flex";
+};
+</script>
+
+</body>
+</html>
