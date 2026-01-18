@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Asia Capitals Quiz 🌍</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; overflow: hidden;
+    font-family: 'Poppins', sans-serif; color: #fff;
+    display: flex; justify-content: center; align-items: center;
+    padding: 2rem; position: relative; background: #000;
+  }
+  .bg { position: fixed; top:0; left:0; width:100%; height:100%;
+    background-size: cover; background-position: center;
+    transition: opacity 2s ease-in-out; z-index: -2;
+  }
+  .bg.fade-out { opacity:0; }
+  .container {
+    background: rgba(0,0,0,0.55); backdrop-filter: blur(6px);
+    border-radius: 1.2rem; box-shadow:0 0 30px rgba(0,0,0,0.5);
+    max-width: 800px; width:100%; padding:2rem 2.5rem; text-align:center;
+    position: relative; z-index:2; animation: fadeIn 1.5s ease-in-out;
+  }
+  @keyframes fadeIn { from {opacity:0; transform: translateY(10px);} to {opacity:1; transform: translateY(0);} }
+  h1 { font-size:2rem; font-weight:600; margin-bottom:1.5rem; color:#ffcc33; text-shadow:0 0 10px rgba(255,204,51,0.6);}
+  .question { font-size:1.2rem; margin-bottom:1rem; }
+  .choices button {
+    display:block; width:100%; background: rgba(255,255,255,0.1);
+    border:2px solid rgba(255,255,255,0.3); color:#fff;
+    font-size:1rem; padding:0.8rem; border-radius:0.8rem;
+    cursor:pointer; transition: all 0.3s ease; margin:0.5rem 0;
+  }
+  .choices button.correct { background: rgba(46,204,113,0.8); }
+  .choices button.wrong { background: rgba(231,76,60,0.8); }
+  .choices button:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
+  .footer { margin-top:1.5rem; font-size:0.9rem; opacity:0.8; }
+  #quizScreen, #results { display:none; }
+  @media(max-width:600px){ .container{ padding:1.5rem; } h1{ font-size:1.6rem; } }
+  .controls { margin-top:1rem; display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<div id="bg1" class="bg"></div>
+<div id="bg2" class="bg fade-out"></div>
+
+<div class="container">
+
+  <div id="startScreen">
+    <h1>Asia Capitals Quiz 🌍</h1>
+    <button id="startBtn">Start Quiz</button>
+  </div>
+
+  <div id="quizScreen">
+    <div id="qnum"></div>
+    <div class="question" id="questionText"></div>
+    <div class="choices" id="choices"></div>
+    <div class="controls">
+      <button id="nextBtn">Next</button>
+      <button id="skipBtn">Skip</button>
+      <label><input type="checkbox" id="autoNext"> Auto Next</label>
+    </div>
+    <div id="timerText">Time: 0s</div>
+  </div>
+
+  <div id="results">
+    <h1>Quiz Finished!</h1>
+    <p id="finalScore"></p>
+    <p id="finalSummary"></p>
+    <button id="restartBtn">Restart Quiz</button>
+  </div>
+
+  <div class="footer">Asia | Geography Quiz</div>
+</div>
+
+<script>
+/* ========= UTILS ========= */
+function shuffleArray(arr){
+  for(let i = arr.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+/* =========  images de fond ========= */
+const images = [
+  "https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?auto=format&fit=crop&q=80&w=871",
+  "https://images.unsplash.com/photo-1484318571209-661cf29a69c3?auto=format&fit=crop&q=80&w=870",
+  "https://images.unsplash.com/photo-1614531341773-3bff8b7cb3fc?auto=format&fit=crop&q=80&w=1032",
+  "https://images.unsplash.com/photo-1519659528534-7fd733a832a0?auto=format&fit=crop&q=80&w=726",
+  "https://images.unsplash.com/photo-1481464904474-a575a33b44a0?auto=format&fit=crop&q=80&w=871",
+  "https://images.unsplash.com/photo-1518709594023-6eab9bab7b23?auto=format&fit=crop&q=80&w=725"
+];
+
+const bg1 = document.getElementById('bg1');
+const bg2 = document.getElementById('bg2');
+let current = 0;
+
+bg1.style.backgroundImage = `url("${images[current]}")`;
+bg2.style.backgroundImage = `url("${images[1]}")`;
+
+setInterval(()=>{
+  bg1.classList.toggle('fade-out');
+  bg2.classList.toggle('fade-out');
+  current = (current+1)%images.length;
+  const next = (current+1)%images.length;
+
+  setTimeout(()=>{
+    if(bg1.classList.contains('fade-out')){
+      bg1.style.backgroundImage = `url("${images[next]}")`;
+    } else {
+      bg2.style.backgroundImage = `url("${images[next]}")`;
+    }
+  },2000);
+},8000);
+
+/* ========= Q ========= */
+const QUESTIONS = [
+{q:"What is the capital of Afghanistan?", choices:["Kabul","Tehran","Islamabad","Dushanbe"], answer:0},
+{q:"What is the capital of Armenia?", choices:["Yerevan","Tbilisi","Baku","Ankara"], answer:0},
+{q:"What is the capital of Azerbaijan?", choices:["Baku","Yerevan","Tbilisi","Ashgabat"], answer:0},
+{q:"What is the capital of Bahrain?", choices:["Manama","Doha","Kuwait City","Riyadh"], answer:0},
+{q:"What is the capital of Bangladesh?", choices:["Dhaka","Kolkata","Islamabad","Kathmandu"], answer:0},
+{q:"What is the capital of Bhutan?", choices:["Thimphu","Kathmandu","Dhaka","Lhasa"], answer:0},
+{q:"What is the capital of Brunei?", choices:["Bandar Seri Begawan","Kuala Lumpur","Jakarta","Manila"], answer:0},
+{q:"What is the capital of Cambodia?", choices:["Phnom Penh","Vientiane","Bangkok","Hanoi"], answer:0},
+{q:"What is the capital of China?", choices:["Beijing","Shanghai","Hong Kong","Nanjing"], answer:0},
+{q:"What is the capital of Cyprus?", choices:["Nicosia","Athens","Ankara","Limassol"], answer:0},
+{q:"What is the capital of Georgia?", choices:["Tbilisi","Baku","Yerevan","Batumi"], answer:0},
+{q:"What is the capital of India?", choices:["New Delhi","Mumbai","Bangalore","Chennai"], answer:0},
+{q:"What is the capital of Indonesia?", choices:["Jakarta","Surabaya","Bandung","Medan"], answer:0},
+{q:"What is the capital of Iran?", choices:["Tehran","Isfahan","Shiraz","Tabriz"], answer:0},
+{q:"What is the capital of Iraq?", choices:["Baghdad","Basra","Mosul","Kirkuk"], answer:0},
+{q:"What is the capital of Israel?", choices:["Jerusalem","Tel Aviv","Haifa","Eilat"], answer:0},
+{q:"What is the capital of Japan?", choices:["Tokyo","Osaka","Kyoto","Yokohama"], answer:0},
+{q:"What is the capital of Jordan?", choices:["Amman","Aqaba","Irbid","Zarqa"], answer:0},
+{q:"What is the capital of Kazakhstan?", choices:["Astana","Almaty","Tashkent","Bishkek"], answer:0},
+{q:"What is the capital of Kuwait?", choices:["Kuwait City","Manama","Doha","Riyadh"], answer:0},
+{q:"What is the capital of Kyrgyzstan?", choices:["Bishkek","Osh","Dushanbe","Tashkent"], answer:0},
+{q:"What is the capital of Laos?", choices:["Vientiane","Phnom Penh","Hanoi","Bangkok"], answer:0},
+{q:"What is the capital of Lebanon?", choices:["Beirut","Tripoli","Sidon","Byblos"], answer:0},
+{q:"What is the capital of Malaysia?", choices:["Kuala Lumpur","Putrajaya","Penang","Johor Bahru"], answer:0},
+{q:"What is the capital of Maldives?", choices:["Malé","Colombo","Male City","Thiruvananthapuram"], answer:0},
+{q:"What is the capital of Mongolia?", choices:["Ulaanbaatar","Astana","Irkutsk","Hohhot"], answer:0},
+{q:"What is the capital of Myanmar?", choices:["Naypyidaw","Yangon","Mandalay","Bago"], answer:0},
+{q:"What is the capital of Nepal?", choices:["Kathmandu","Pokhara","Lalitpur","Bhaktapur"], answer:0},
+{q:"What is the capital of North Korea?", choices:["Pyongyang","Seoul","Kaesong","Wonsan"], answer:0},
+{q:"What is the capital of Oman?", choices:["Muscat","Salalah","Sohar","Nizwa"], answer:0},
+{q:"What is the capital of Pakistan?", choices:["Islamabad","Karachi","Lahore","Peshawar"], answer:0},
+{q:"What is the capital of Philippines?", choices:["Manila","Cebu","Davao","Quezon City"], answer:0},
+{q:"What is the capital of Qatar?", choices:["Doha","Manama","Abu Dhabi","Riyadh"], answer:0},
+{q:"What is the capital of Saudi Arabia?", choices:["Riyadh","Jeddah","Mecca","Medina"], answer:0},
+{q:"What is the capital of Singapore?", choices:["Singapore","Sentosa","Jurong","Tampines"], answer:0},
+{q:"What is the capital of South Korea?", choices:["Seoul","Busan","Incheon","Daegu"], answer:0},
+{q:"What is the capital of Sri Lanka?", choices:["Sri Jayawardenepura Kotte","Colombo","Kandy","Galle"], answer:0},
+{q:"What is the capital of Syria?", choices:["Damascus","Aleppo","Homs","Latakia"], answer:0},
+{q:"What is the capital of Tajikistan?", choices:["Dushanbe","Bishkek","Samarkand","Tashkent"], answer:0},
+{q:"What is the capital of Thailand?", choices:["Bangkok","Chiang Mai","Phuket","Pattaya"], answer:0},
+{q:"What is the capital of Timor-Leste?", choices:["Dili","Baucau","Liquica","Same"], answer:0},
+{q:"What is the capital of Turkey?", choices:["Ankara","Istanbul","Izmir","Bursa"], answer:0},
+{q:"What is the capital of Turkmenistan?", choices:["Ashgabat","Mary","Turkmenabat","Dashoguz"], answer:0},
+{q:"What is the capital of United Arab Emirates?", choices:["Abu Dhabi","Dubai","Sharjah","Ajman"], answer:0},
+{q:"What is the capital of Uzbekistan?", choices:["Tashkent","Samarkand","Bukhara","Khiva"], answer:0},
+{q:"What is the capital of Vietnam?", choices:["Hanoi","Ho Chi Minh City","Da Nang","Hue"], answer:0},
+{q:"What is the capital of Yemen?", choices:["Sana'a","Aden","Taiz","Hodeidah"], answer:0}
+];
+
+
+
+/* ========= STATE ========= */
+const state = { i:0, score:0, correct:0, wrong:0, start:null };
+
+/* ========= ELEMENTS ========= */
+const el = {
+  startScreen:document.getElementById('startScreen'),
+  startBtn:document.getElementById('startBtn'),
+  quizScreen:document.getElementById('quizScreen'),
+  qnum:document.getElementById('qnum'),
+  questionText:document.getElementById('questionText'),
+  choices:document.getElementById('choices'),
+  nextBtn:document.getElementById('nextBtn'),
+  skipBtn:document.getElementById('skipBtn'),
+  timerText:document.getElementById('timerText'),
+  results:document.getElementById('results'),
+  finalScore:document.getElementById('finalScore'),
+  finalSummary:document.getElementById('finalSummary'),
+  restartBtn:document.getElementById('restartBtn'),
+  autoNext:document.getElementById('autoNext')
+};
+
+/* Quiz  */
+function startQuiz(){
+  shuffleArray(QUESTIONS);
+  state.i=0; state.score=0; state.correct=0; state.wrong=0;
+  state.start=Date.now();
+
+  el.startScreen.style.display="none";
+  el.quizScreen.style.display="block";
+  el.results.style.display="none";
+  renderQ();
+}
+
+function renderQ(){
+  if(state.i>=QUESTIONS.length){ finish(); return; }
+
+  const q = QUESTIONS[state.i];
+
+  const answers = q.choices.map((t,i)=>({
+    text:t,
+    correct:i===q.answer
+  }));
+
+  shuffleArray(answers);
+
+  el.qnum.textContent = `${state.i+1}/${QUESTIONS.length}`;
+  el.questionText.textContent = q.q;
+  el.choices.innerHTML = "";
+
+  answers.forEach(a=>{
+    const b=document.createElement('button');
+    b.textContent=a.text;
+    b.onclick=()=>selectAnswer(a.correct,b);
+    el.choices.appendChild(b);
+  });
+}
+
+function selectAnswer(isCorrect, btn){
+  Array.from(el.choices.children).forEach(b=>b.disabled=true);
+
+  if(isCorrect){
+    btn.classList.add("correct");
+    state.score+=10;
+    state.correct++;
+  } else {
+    btn.classList.add("wrong");
+    state.wrong++;
+    Array.from(el.choices.children)
+      .find(b=>b!==btn)
+      ?.classList.add("correct");
+  }
+
+  if(el.autoNext.checked) setTimeout(nextQ,150);
+}
+
+function nextQ(){ state.i++; renderQ(); }
+function skipQ(){ state.i++; renderQ(); }
+
+function finish(){
+  el.quizScreen.style.display="none";
+  el.results.style.display="block";
+  el.finalScore.textContent = `${state.score} points`;
+  el.finalSummary.textContent =
+    `${state.correct}/${QUESTIONS.length} correct · ${Math.round((Date.now()-state.start)/1000)}s`;
+}
+
+/*  TIMER  */
+setInterval(()=>{
+  if(state.start){
+    el.timerText.textContent =
+      "Time: "+Math.round((Date.now()-state.start)/1000)+"s";
+  }
+},1000);
+
+/* BUTTONS */
+el.startBtn.onclick=startQuiz;
+el.nextBtn.onclick=nextQ;
+el.skipBtn.onclick=skipQ;
+el.restartBtn.onclick=()=>location.reload();
+</script>
+
+
+</body>
+</html>
